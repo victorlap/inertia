@@ -1,5 +1,6 @@
 import modal from './modal'
 import debounce from './debounce'
+import deepmerge from 'deepmerge'
 import { hasFiles } from './files'
 import { objectToFormData } from './formData'
 import { default as Axios, AxiosResponse } from 'axios'
@@ -312,7 +313,8 @@ export class Router {
 
       const pageResponse: Page = response.data
       if (only.length && pageResponse.component === this.page.component) {
-        pageResponse.props = { ...this.page.props, ...pageResponse.props }
+        const overwriteMerge = (destinationArray, sourceArray, options) => sourceArray
+        pageResponse.props = deepmerge(this.page.props, pageResponse.props, { arrayMerge: overwriteMerge });
       }
       preserveScroll = this.resolvePreserveOption(preserveScroll, pageResponse) as boolean
       preserveState = this.resolvePreserveOption(preserveState, pageResponse)
